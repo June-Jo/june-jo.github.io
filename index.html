@@ -16,7 +16,6 @@
   body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:15px; line-height:1.65; min-height:100vh; }
 
   nav { position:sticky; top:0; z-index:100; background:rgba(14,15,19,0.92); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 40px; height:56px; }
-  .nav-brand { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--accent); letter-spacing:0.05em; margin-right:40px; white-space:nowrap; text-decoration:none; }
   .nav-tabs { display:flex; gap:2px; height:100%; align-items:center; }
   .nav-tab { height:100%; padding:0 18px; display:flex; align-items:center; font-size:13.5px; font-weight:500; color:var(--text-muted); cursor:pointer; border:none; background:none; position:relative; transition:color 0.2s; white-space:nowrap; }
   .nav-tab::after { content:''; position:absolute; bottom:0; left:18px; right:18px; height:2px; background:var(--accent); transform:scaleX(0); transition:transform 0.2s; }
@@ -34,19 +33,13 @@
   .hero-bio { color:var(--text-muted); font-size:15.5px; line-height:1.75; margin-bottom:32px; }
 
   .profile-col { display:flex; flex-direction:column; gap:14px; }
-  .profile-photo {
-    width:100%; aspect-ratio:1/1; border-radius:16px; overflow:hidden;
-    border:1px solid var(--border); background:var(--surface2);
-    display:flex; align-items:flex-start; justify-content:center;
-  }
-  /* object-position: top so head is never cropped */
+  .profile-photo { width:100%; aspect-ratio:1/1; border-radius:16px; overflow:hidden; border:1px solid var(--border); background:var(--surface2); display:flex; align-items:flex-start; justify-content:center; }
   .profile-photo img { width:100%; height:100%; object-fit:cover; object-position:top; display:block; }
 
   .contact-list { list-style:none; display:flex; flex-direction:column; gap:10px; margin-top:28px; }
   .contact-list li { display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--text-muted); }
   .contact-list .icon { width:28px; height:28px; border-radius:6px; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
 
-  /* 3-card stats grid: 2 on top, 1 spanning full width on bottom */
   .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; text-align:center; }
   .stat-card.full { grid-column:span 2; }
@@ -93,8 +86,8 @@
   .project-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:border-color 0.2s, transform 0.2s; }
   .project-card:hover { border-color:var(--accent); transform:translateY(-2px); }
   .project-card.featured { grid-column:span 2; display:grid; grid-template-columns:300px 1fr; align-items:stretch; }
-.project-card.featured .project-media { aspect-ratio:unset; width:300px; height:100%; }
-.project-card.featured .project-body { display:flex; flex-direction:column; justify-content:center; padding:28px 32px; }
+  .project-card.featured .project-media { aspect-ratio:unset; width:300px; height:100%; }
+  .project-card.featured .project-body { display:flex; flex-direction:column; justify-content:center; padding:28px 32px; }
   .project-media { width:100%; aspect-ratio:16/9; background:var(--surface2); overflow:hidden; }
   .project-media img { width:100%; height:100%; object-fit:cover; display:block; }
   .project-media video { width:100%; height:100%; display:block; background:#000; }
@@ -140,7 +133,8 @@
     .section { padding:40px 20px; }
     .hero { grid-template-columns:1fr; gap:32px; }
     .projects-grid { grid-template-columns:1fr; }
-    .project-card.featured { grid-column:span 1; }
+    .project-card.featured { grid-column:span 1; grid-template-columns:1fr; }
+    .project-card.featured .project-media { width:100%; aspect-ratio:9/16; }
     .skills-layout { grid-template-columns:1fr; }
     .comps-grid { grid-template-columns:1fr; }
     .edu-row { grid-template-columns:1fr; }
@@ -178,7 +172,6 @@
         <img src="images/profile.jpg" alt="HyunJun Jo"
           onerror="this.style.display='none';this.parentElement.innerHTML+='<span style=\'font-family:JetBrains Mono,monospace;font-size:11px;color:var(--text-dim)\'>profile.jpg</span>'">
       </div>
-      <!-- 3 stat cards: 2-col top row, full-width bottom -->
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-number">9+</div><div class="stat-label">Years Exp.</div></div>
         <div class="stat-card"><div class="stat-number">3</div><div class="stat-label">Gov't Projects</div></div>
@@ -298,8 +291,12 @@
 <section id="projects" class="section">
   <h2 class="section-heading"><span>01</span>Projects</h2>
   <div class="projects-grid">
+
+    <!-- CES: vertical video left, text right -->
     <div class="project-card featured">
-      <div class="project-media"><video controls muted preload="metadata"><source src="videos/CES.mp4" type="video/mp4"></video></div>
+      <div class="project-media">
+        <video controls muted preload="metadata"><source src="videos/CES.mp4" type="video/mp4"></video>
+      </div>
       <div class="project-body">
         <div class="project-year">2025 – 2026 · Doosan Robotics</div>
         <div class="project-title">AI Depalletizer</div>
@@ -310,9 +307,16 @@
           <li>CES 2026 시연: 텍스트 입력 → 박스 정렬</li>
           <li>ROS2 기반 CuMotion 및 Isaac SIM 통합</li>
         </ul>
-        <div class="badge-row"><span class="tag lang">Python</span><span class="tag fw">ROS2</span><span class="tag ai">PyTorch</span><span class="tag fw">FastAPI</span><span class="tag fw">Kivy</span><span class="tag ai">OCR</span><span class="tag ai">OpenCV</span><span class="tag ai">Open3D</span><span class="tag ai">SORT</span><span class="tag hw">CuMotion</span><span class="tag hw">OnRobot</span><span class="tag hw">Jetson Orin/Thor</span></div>
+        <!-- PPT Slide 5 -->
+        <div class="badge-row">
+          <span class="tag lang">Python</span>
+          <span class="tag fw">ROS2</span><span class="tag fw">FastAPI</span><span class="tag fw">Kivy</span>
+          <span class="tag ai">PyTorch</span><span class="tag ai">OCR</span><span class="tag ai">OpenCV</span><span class="tag ai">Open3D</span><span class="tag ai">SORT</span>
+          <span class="tag hw">CuMotion</span><span class="tag hw">OnRobot</span><span class="tag hw">Jetson Orin/Thor</span>
+        </div>
       </div>
     </div>
+
     <div class="project-card">
       <div class="project-media"><img src="images/lerobot.jpg" alt="양팔 로봇 & Teleoperation"></div>
       <div class="project-body">
@@ -325,9 +329,15 @@
           <li>LeRobot 기반 Leader &amp; Follower 원격 조작</li>
           <li>Rerun 활용 데이터 시각화</li>
         </ul>
-        <div class="badge-row"><span class="tag lang">Python</span><span class="tag fw">ROS2</span><span class="tag ai">PyTorch</span><span class="tag fw">LeRobot</span><span class="tag fw">Rerun</span><span class="tag ai">OpenCV</span></div>
+        <!-- PPT Slide 6 -->
+        <div class="badge-row">
+          <span class="tag lang">Python</span>
+          <span class="tag fw">ROS2</span><span class="tag fw">LeRobot</span><span class="tag fw">Rerun</span>
+          <span class="tag ai">PyTorch</span><span class="tag ai">OpenCV</span>
+        </div>
       </div>
     </div>
+
     <div class="project-card">
       <div class="project-media"><video controls muted preload="metadata"><source src="videos/TAG.mp4" type="video/mp4"></video></div>
       <div class="project-body">
@@ -338,35 +348,41 @@
           <li>무게중심·부피·질량 추정 CV-Net 개발</li>
           <li>발생 토크 기반 그리퍼 자동 선정 알고리즘</li>
         </ul>
-        <div class="badge-row"><span class="tag lang">Python</span><span class="tag fw">ROS2</span><span class="tag ai">PyTorch</span><span class="tag ai">Open3D</span><span class="tag hw">Tool Changer</span><span class="tag hw">RealSense</span></div>
+        <!-- PPT Slide 7: added TensorFlow, Qt, OpenCV -->
+        <div class="badge-row"><span class="tag lang">Python</span><span class="tag fw">ROS2</span><span class="tag fw">Qt</span><span class="tag ai">PyTorch</span><span class="tag ai">TensorFlow</span><span class="tag ai">OpenCV</span><span class="tag ai">Open3D</span><span class="tag hw">Tool Changer</span><span class="tag hw">RealSense</span></div>
       </div>
     </div>
+
     <div class="project-card">
       <div class="project-media"><video controls muted preload="metadata"><source src="videos/TOG.mp4" type="video/mp4"></video></div>
       <div class="project-body">
         <div class="project-year">2022 – 2024 · Korea University</div>
-        <div class="project-title">Task-Oriented Grasping (SIAS-Net)</div>
+        <div class="project-title">Task-Oriented Grasping</div>
         <ul class="project-desc">
           <li>마스크·어포던스 동시 추정 SIAS-Net 개발</li>
           <li>어포던스 기반 파지 자세 추정 알고리즘</li>
           <li>토크 기반 그리퍼 자동 선정 알고리즘</li>
         </ul>
-        <div class="badge-row"><span class="tag lang">Python</span><span class="tag fw">ROS2</span><span class="tag ai">PyTorch</span><span class="tag ai">Open3D</span><span class="tag hw">UR</span><span class="tag hw">Tool Changer</span></div>
+        <!-- PPT Slide 8: added TensorFlow, Qt, OpenCV, RealSense -->
+        <div class="badge-row"><span class="tag lang">Python</span><span class="tag fw">ROS2</span><span class="tag fw">Qt</span><span class="tag ai">PyTorch</span><span class="tag ai">TensorFlow</span><span class="tag ai">OpenCV</span><span class="tag ai">Open3D</span><span class="tag hw">UR</span><span class="tag hw">Tool Changer</span><span class="tag hw">RealSense</span></div>
       </div>
     </div>
+
     <div class="project-card">
       <div class="project-media"><video controls muted preload="metadata"><source src="videos/ramen.mp4" type="video/mp4"></video></div>
       <div class="project-body">
         <div class="project-year">2022 – 2023</div>
-        <div class="project-title">요리 로봇 플랫폼 (F&amp;B)</div>
+        <div class="project-title">요리 로봇 플랫폼</div>
         <ul class="project-desc">
           <li>그리퍼 교환 기반 F&B 요리 솔루션 개발</li>
           <li>AI 기반 식재료·도구·마커 인식</li>
           <li>오이무침·라면·짜장면·탕수육 실제 요리 수행</li>
         </ul>
-        <div class="badge-row"><span class="tag fw">ROS1</span><span class="tag ai">PyTorch</span><span class="tag hw">Tool Changer</span><span class="tag hw">UR</span><span class="tag hw">Mitsubishi</span></div>
+        <!-- PPT Slide 9: added Python, TensorFlow, Qt, OpenCV, Open3D, RS-232, RealSense -->
+        <div class="badge-row"><span class="tag lang">Python</span><span class="tag fw">ROS1</span><span class="tag fw">Qt</span><span class="tag fw">RS-232</span><span class="tag ai">PyTorch</span><span class="tag ai">TensorFlow</span><span class="tag ai">OpenCV</span><span class="tag ai">Open3D</span><span class="tag hw">UR</span><span class="tag hw">Mitsubishi</span><span class="tag hw">Tool Changer</span><span class="tag hw">RealSense</span></div>
       </div>
     </div>
+
     <div class="project-card">
       <div class="project-media"><video controls muted preload="metadata"><source src="videos/tidy up.mp4" type="video/mp4"></video></div>
       <div class="project-body">
@@ -377,9 +393,11 @@
           <li>Mask RCNN + 샴 네트워크 기반 미학습 물체 인식</li>
           <li>강화학습 기반 파지 모션 제어</li>
         </ul>
-        <div class="badge-row"><span class="tag fw">ROS1</span><span class="tag ai">PyTorch</span><span class="tag hw">Allegro</span><span class="tag hw">Panda</span></div>
+        <!-- PPT Slide 10: added Python, TensorFlow, Qt, OpenCV, Open3D, RealSense, Femto -->
+        <div class="badge-row"><span class="tag lang">Python</span><span class="tag fw">ROS1</span><span class="tag fw">Qt</span><span class="tag ai">PyTorch</span><span class="tag ai">TensorFlow</span><span class="tag ai">OpenCV</span><span class="tag ai">Open3D</span><span class="tag hw">Allegro</span><span class="tag hw">Panda</span><span class="tag hw">RealSense</span><span class="tag hw">Femto</span></div>
       </div>
     </div>
+
     <div class="project-card">
       <div class="project-media"><video controls muted preload="metadata"><source src="videos/bin picking.mp4" type="video/mp4"></video></div>
       <div class="project-body">
@@ -390,9 +408,11 @@
           <li>Instance segmentation으로 미학습 물체 인식</li>
           <li>DDI 기반 AI 미인식 물체 파지 알고리즘</li>
         </ul>
-        <div class="badge-row"><span class="tag fw">ROS1</span><span class="tag ai">PyTorch</span><span class="tag hw">UR</span><span class="tag hw">RealSense</span></div>
+        <!-- PPT Slide 11: added Python, TensorFlow, Qt, OpenCV, Open3D -->
+        <div class="badge-row"><span class="tag lang">Python</span><span class="tag fw">ROS1</span><span class="tag fw">Qt</span><span class="tag ai">PyTorch</span><span class="tag ai">TensorFlow</span><span class="tag ai">OpenCV</span><span class="tag ai">Open3D</span><span class="tag hw">UR</span><span class="tag hw">RealSense</span></div>
       </div>
     </div>
+
     <div class="project-card">
       <div class="project-media"><video controls muted preload="metadata"><source src="videos/assembly.mp4" type="video/mp4"></video></div>
       <div class="project-body">
@@ -402,9 +422,16 @@
           <li>GMM-GMR 알고리즘으로 사람의 조립 전략 학습</li>
           <li>양팔 협조 작업, 어드미턴스 제어로 위치 오차 극복</li>
         </ul>
-        <div class="badge-row"><span class="tag fw">ROS1</span><span class="tag ai">TensorFlow</span><span class="tag hw">Sawyer</span><span class="tag hw">UR</span></div>
+        <!-- PPT Slide 12 -->
+        <div class="badge-row">
+          <span class="tag lang">Python</span>
+          <span class="tag fw">ROS1</span><span class="tag fw">Qt</span><span class="tag fw">RS-485</span>
+          <span class="tag ai">TensorFlow</span><span class="tag ai">Caffe</span><span class="tag ai">OpenCV</span><span class="tag ai">Open3D</span>
+          <span class="tag hw">Sawyer</span><span class="tag hw">UR</span><span class="tag hw">RealSense</span>
+        </div>
       </div>
     </div>
+
     <div class="project-card">
       <div class="project-media"><video controls muted preload="metadata"><source src="videos/data collection.mp4" type="video/mp4"></video></div>
       <div class="project-body">
@@ -414,15 +441,22 @@
           <li>파지 및 조립 데이터 수집 환경 설계·제작</li>
           <li>다양한 물체 인식 및 파지 모델 개발</li>
         </ul>
-        <div class="badge-row"><span class="tag fw">ROS1</span><span class="tag ai">TensorFlow</span><span class="tag ai">Caffe</span><span class="tag hw">UR</span><span class="tag hw">RealSense</span></div>
+        <!-- PPT Slide 13 -->
+        <div class="badge-row">
+          <span class="tag lang">Python</span>
+          <span class="tag fw">ROS1</span><span class="tag fw">Qt</span>
+          <span class="tag ai">TensorFlow</span><span class="tag ai">Caffe</span><span class="tag ai">OpenCV</span><span class="tag ai">Open3D</span>
+          <span class="tag hw">UR</span><span class="tag hw">RealSense</span>
+        </div>
       </div>
     </div>
+
   </div>
 </section>
 
 <!-- RESEARCH -->
 <section id="research" class="section">
-  <h2 class="section-heading"><span>01</span>Publications &amp; Patents</h2>
+  <h2 class="section-heading"><span>04</span>Publications &amp; Patents</h2>
   <div class="pub-filter">
     <button class="pub-filter-btn active" onclick="filterPubs('all',this)">All</button>
     <button class="pub-filter-btn" onclick="filterPubs('intl-journal',this)">Intl. Journal</button>
