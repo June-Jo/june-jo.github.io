@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyunJun Jo — AI & Robotics Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f13; --surface: #16181f; --surface2: #1e2029;
+    --border: #2a2d3a; --accent: #5b8dee; --accent2: #a78bfa;
+    --green: #34d399; --amber: #fbbf24; --coral: #f87171;
+    --text: #e8eaf0; --text-muted: #8890a8; --text-dim: #555c72;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:15px; line-height:1.65; min-height:100vh; }
+
+  nav { position:sticky; top:0; z-index:100; background:rgba(14,15,19,0.92); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 40px; height:56px; }
+  .nav-brand { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--accent); letter-spacing:0.05em; margin-right:40px; white-space:nowrap; text-decoration:none; }
+  .nav-tabs { display:flex; gap:2px; height:100%; align-items:center; }
+  .nav-tab { height:100%; padding:0 18px; display:flex; align-items:center; font-size:13.5px; font-weight:500; color:var(--text-muted); cursor:pointer; border:none; background:none; position:relative; transition:color 0.2s; white-space:nowrap; }
+  .nav-tab::after { content:''; position:absolute; bottom:0; left:18px; right:18px; height:2px; background:var(--accent); transform:scaleX(0); transition:transform 0.2s; }
+  .nav-tab:hover { color:var(--text); }
+  .nav-tab.active { color:var(--text); }
+  .nav-tab.active::after { transform:scaleX(1); }
+
+  .section { display:none; padding:56px 40px; max-width:1040px; margin:0 auto; }
+  .section.active { display:block; animation:fadeUp 0.35s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  .hero { display:grid; grid-template-columns:1fr 280px; gap:56px; align-items:start; }
+  .hero-name { font-family:'DM Serif Display',serif; font-size:52px; line-height:1.1; letter-spacing:-0.02em; margin-bottom:8px; }
+  .hero-title { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--accent); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:28px; }
+  .hero-bio { color:var(--text-muted); font-size:15.5px; line-height:1.75; margin-bottom:32px; }
+
+  .profile-col { display:flex; flex-direction:column; gap:14px; }
+  .profile-photo {
+    width:100%; aspect-ratio:1/1; border-radius:16px; overflow:hidden;
+    border:1px solid var(--border); background:var(--surface2);
+    display:flex; align-items:flex-start; justify-content:center;
+  }
+  /* object-position: top so head is never cropped */
+  .profile-photo img { width:100%; height:100%; object-fit:cover; object-position:top; display:block; }
+
+  .contact-list { list-style:none; display:flex; flex-direction:column; gap:10px; margin-top:28px; }
+  .contact-list li { display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--text-muted); }
+  .contact-list .icon { width:28px; height:28px; border-radius:6px; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+
+  /* 3-card stats grid: 2 on top, 1 spanning full width on bottom */
+  .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; text-align:center; }
+  .stat-card.full { grid-column:span 2; }
+  .stat-number { font-family:'DM Serif Display',serif; font-size:30px; color:var(--accent); line-height:1; margin-bottom:4px; }
+  .stat-label { font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; }
+
+  .section-heading { font-family:'DM Serif Display',serif; font-size:28px; margin-bottom:32px; letter-spacing:-0.01em; }
+  .section-heading span { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase; vertical-align:middle; margin-right:12px; }
+
+  .skills-layout { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  .skill-group { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; }
+  .skill-group-title { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:18px; }
+  .skill-bar-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .skill-bar-label { width:130px; font-size:13.5px; flex-shrink:0; color:var(--text-muted); }
+  .skill-bar-track { flex:1; height:5px; background:var(--border); border-radius:3px; overflow:hidden; }
+  .skill-bar-fill { height:100%; border-radius:3px; background:var(--accent); }
+  .tag-cloud { display:flex; flex-wrap:wrap; gap:7px; }
+  .tag { padding:4px 10px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:11.5px; background:var(--surface2); color:var(--text-muted); border:1px solid var(--border); }
+  .tag.lang { border-color:#3b5bdb44; color:#90b4ff; background:#3b5bdb15; }
+  .tag.fw   { border-color:#a78bfa44; color:#c4b5fd; background:#a78bfa15; }
+  .tag.ai   { border-color:#34d39944; color:#6ee7b7; background:#34d39915; }
+  .tag.hw   { border-color:#fbbf2444; color:#fde68a; background:#fbbf2415; }
+
+  .timeline { position:relative; padding-left:28px; }
+  .timeline::before { content:''; position:absolute; left:7px; top:8px; bottom:8px; width:2px; background:var(--border); }
+  .timeline-item { position:relative; margin-bottom:36px; }
+  .timeline-item::before { content:''; position:absolute; left:-25px; top:8px; width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid var(--bg); box-shadow:0 0 0 2px var(--accent); }
+  .timeline-date { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text-dim); margin-bottom:4px; }
+  .timeline-company { font-size:17px; font-weight:600; margin-bottom:2px; }
+  .timeline-role { font-size:12.5px; color:var(--accent); font-family:'JetBrains Mono',monospace; margin-bottom:10px; }
+  .timeline-body { color:var(--text-muted); font-size:14px; }
+  .timeline-body li { list-style:none; padding-left:14px; position:relative; margin-bottom:4px; }
+  .timeline-body li::before { content:'·'; position:absolute; left:0; color:var(--text-dim); }
+  .badge-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  .badge { padding:3px 9px; border-radius:4px; font-size:11px; font-family:'JetBrains Mono',monospace; background:var(--surface2); color:var(--text-muted); border:1px solid var(--border); }
+  .edu-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:36px; }
+  .edu-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:20px 22px; }
+  .edu-degree { font-size:15.5px; font-weight:600; margin-bottom:3px; }
+  .edu-school { font-size:13px; color:var(--accent); font-family:'JetBrains Mono',monospace; margin-bottom:5px; }
+  .edu-period { font-size:12px; color:var(--text-dim); margin-bottom:8px; }
+  .edu-desc { font-size:13px; color:var(--text-muted); line-height:1.6; }
+
+  .projects-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .project-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:border-color 0.2s, transform 0.2s; }
+  .project-card:hover { border-color:var(--accent); transform:translateY(-2px); }
+  .project-card.featured { grid-column:span 2; display:grid; grid-template-columns:300px 1fr; align-items:stretch; }
+.project-card.featured .project-media { aspect-ratio:unset; width:300px; height:100%; }
+.project-card.featured .project-body { display:flex; flex-direction:column; justify-content:center; padding:28px 32px; }
+  .project-media { width:100%; aspect-ratio:16/9; background:var(--surface2); overflow:hidden; }
+  .project-media img { width:100%; height:100%; object-fit:cover; display:block; }
+  .project-media video { width:100%; height:100%; display:block; background:#000; }
+  .project-body { padding:20px 22px; }
+  .project-year { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); margin-bottom:6px; }
+  .project-title { font-size:16px; font-weight:600; margin-bottom:10px; line-height:1.3; }
+  .project-desc { color:var(--text-muted); font-size:13.5px; line-height:1.65; margin-bottom:14px; }
+  .project-desc li { list-style:none; padding-left:14px; position:relative; margin-bottom:3px; }
+  .project-desc li::before { content:'·'; position:absolute; left:0; color:var(--text-dim); }
+
+  .pub-filter { display:flex; gap:8px; margin-bottom:28px; flex-wrap:wrap; }
+  .pub-filter-btn { padding:6px 14px; border-radius:6px; font-size:12.5px; font-weight:500; border:1px solid var(--border); background:var(--surface); color:var(--text-muted); cursor:pointer; transition:all 0.2s; }
+  .pub-filter-btn.active, .pub-filter-btn:hover { background:var(--accent); border-color:var(--accent); color:white; }
+  .pub-list { display:flex; flex-direction:column; gap:14px; }
+  .pub-item { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:18px 20px; display:grid; grid-template-columns:56px 1fr; gap:16px; align-items:start; }
+  .pub-item[data-type="intl-journal"] { border-left:3px solid var(--accent); }
+  .pub-item[data-type="intl-conf"]    { border-left:3px solid var(--accent2); }
+  .pub-item[data-type="kr-journal"]   { border-left:3px solid var(--green); }
+  .pub-item[data-type="kr-conf"]      { border-left:3px solid var(--amber); }
+  .pub-item[data-type="patent"]       { border-left:3px solid var(--coral); }
+  .pub-item.hidden { display:none; }
+  .pub-year { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text-dim); text-align:center; padding-top:2px; }
+  .pub-venue { font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--text-dim); margin-bottom:4px; }
+  .pub-title { font-size:14px; font-weight:500; color:var(--text); line-height:1.45; margin-bottom:4px; }
+  .pub-authors { font-size:12.5px; color:var(--text-dim); }
+  .pub-authors strong { color:var(--accent); font-weight:600; }
+  .pub-badge { display:inline-block; padding:1px 7px; border-radius:3px; font-size:10px; font-family:'JetBrains Mono',monospace; margin-left:6px; vertical-align:middle; }
+  .pub-badge.first { background:#34d39920; color:var(--green); border:1px solid #34d39940; }
+  .pub-badge.award { background:#fbbf2420; color:var(--amber); border:1px solid #fbbf2440; }
+
+  .comps-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:40px; }
+  .comp-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:22px 24px; display:flex; align-items:flex-start; gap:16px; }
+  .comp-medal { font-size:28px; flex-shrink:0; line-height:1; }
+  .comp-name { font-size:16px; font-weight:600; margin-bottom:3px; }
+  .comp-meta { font-size:12.5px; color:var(--text-dim); font-family:'JetBrains Mono',monospace; }
+  .comp-league { font-size:13px; color:var(--text-muted); margin-top:4px; }
+  .other-awards-list { display:flex; flex-direction:column; gap:10px; }
+  .award-item { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px 18px; display:flex; align-items:center; gap:14px; }
+  .award-year { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-dim); width:36px; flex-shrink:0; }
+
+  @media (max-width:768px) {
+    nav { padding:0 16px; overflow-x:auto; }
+    .section { padding:40px 20px; }
+    .hero { grid-template-columns:1fr; gap:32px; }
+    .projects-grid { grid-template-columns:1fr; }
+    .project-card.featured { grid-column:span 1; }
+    .skills-layout { grid-template-columns:1fr; }
+    .comps-grid { grid-template-columns:1fr; }
+    .edu-row { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="show('about',this)">About</button>
+    <button class="nav-tab" onclick="show('experience',this)">Experience</button>
+    <button class="nav-tab" onclick="show('projects',this)">Projects</button>
+    <button class="nav-tab" onclick="show('research',this)">Research</button>
+    <button class="nav-tab" onclick="show('competitions',this)">Awards</button>
+  </div>
+</nav>
+
+<!-- ABOUT -->
+<section id="about" class="section active">
+  <div class="hero">
+    <div>
+      <div class="hero-title">AI &amp; Robotics Engineer</div>
+      <h1 class="hero-name">HyunJun Jo</h1>
+      <p class="hero-bio">PhD in Mechanical Engineering from Korea University, specializing in robotic grasping, object perception, and AI-driven manipulation systems. Currently building edge-deployed AI depalletizing solutions at Doosan Robotics, with deep experience spanning deep learning, ROS2, point cloud processing, and LLM integration for physical robotics.</p>
+      <ul class="contact-list">
+        <li><span class="icon">📞</span>010-8796-8303</li>
+        <li><span class="icon">✉</span>hyunjunjo@hyunjunjo.com</li>
+        <li><span class="icon">🌐</span>hyunjunjo.com/portfolio-v2</li>
+        <li><span class="icon">📍</span>Suwon-si, Gyeonggi-do, KR</li>
+      </ul>
+    </div>
+    <div class="profile-col">
+      <div class="profile-photo">
+        <img src="images/profile.jpg" alt="HyunJun Jo"
+          onerror="this.style.display='none';this.parentElement.innerHTML+='<span style=\'font-family:JetBrains Mono,monospace;font-size:11px;color:var(--text-dim)\'>profile.jpg</span>'">
+      </div>
+      <!-- 3 stat cards: 2-col top row, full-width bottom -->
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-number">9+</div><div class="stat-label">Years Exp.</div></div>
+        <div class="stat-card"><div class="stat-number">3</div><div class="stat-label">Gov't Projects</div></div>
+        <div class="stat-card full"><div class="stat-number">4</div><div class="stat-label">International Competitions</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:56px">
+    <h2 class="section-heading"><span>02</span>Expertise &amp; Skills</h2>
+    <div class="skills-layout">
+      <div class="skill-group">
+        <div class="skill-group-title">Manipulator</div>
+        <div class="skill-bar-row"><div class="skill-bar-label">Grasping</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div><span style="font-size:12px;color:var(--text-dim);width:32px">80%</span></div>
+        <div class="skill-bar-row"><div class="skill-bar-label">Integration</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div><span style="font-size:12px;color:var(--text-dim);width:32px">80%</span></div>
+        <div class="skill-bar-row"><div class="skill-bar-label">Control</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:50%"></div></div><span style="font-size:12px;color:var(--text-dim);width:32px">50%</span></div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">AI / Perception</div>
+        <div class="skill-bar-row"><div class="skill-bar-label">Object Understanding</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%;background:var(--accent2)"></div></div><span style="font-size:12px;color:var(--text-dim);width:32px">80%</span></div>
+        <div class="skill-bar-row"><div class="skill-bar-label">RFM</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:60%;background:var(--accent2)"></div></div><span style="font-size:12px;color:var(--text-dim);width:32px">60%</span></div>
+        <div class="skill-bar-row"><div class="skill-bar-label">LLM &amp; RAG</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:50%;background:var(--accent2)"></div></div><span style="font-size:12px;color:var(--text-dim);width:32px">50%</span></div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Language</div>
+        <div class="skill-bar-row"><div class="skill-bar-label">Korean</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:100%;background:var(--green)"></div></div><span style="font-size:12px;color:var(--text-dim);width:40px">Native</span></div>
+        <div class="skill-bar-row"><div class="skill-bar-label">English</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%;background:var(--green)"></div></div><span style="font-size:12px;color:var(--text-dim);width:32px">70%</span></div>
+        <div class="skill-bar-row"><div class="skill-bar-label">Japanese</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:50%;background:var(--green)"></div></div><span style="font-size:12px;color:var(--text-dim);width:32px">50%</span></div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Dev Stack</div>
+        <div class="tag-cloud">
+          <span class="tag lang">Python</span><span class="tag lang">MATLAB</span>
+          <span class="tag fw">ROS1/2</span><span class="tag fw">FastAPI</span><span class="tag fw">Qt</span><span class="tag fw">Kivy</span>
+          <span class="tag ai">PyTorch</span><span class="tag ai">OpenCV</span><span class="tag ai">Open3D</span><span class="tag ai">YOLO</span><span class="tag ai">LLM/RAG</span>
+          <span class="tag hw">Jetson Orin/Thor</span><span class="tag hw">RealSense</span><span class="tag hw">Zivid</span><span class="tag hw">Robotiq</span><span class="tag hw">UR</span><span class="tag hw">Doosan</span><span class="tag hw">Panda</span>
+          <span class="tag fw">PyBullet</span><span class="tag fw">MuJoCo</span><span class="tag fw">TCP/IP</span><span class="tag fw">RS-232/485</span>
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:var(--text-dim);display:flex;gap:12px;flex-wrap:wrap">
+          <span style="color:#90b4ff">■</span> Languages &nbsp;
+          <span style="color:#c4b5fd">■</span> Frameworks/MW &nbsp;
+          <span style="color:#6ee7b7">■</span> AI/Vision &nbsp;
+          <span style="color:#fde68a">■</span> Hardware
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" class="section">
+  <h2 class="section-heading"><span>01</span>Education</h2>
+  <div class="edu-row">
+    <div class="edu-card">
+      <div class="edu-degree">Doctor of Philosophy</div>
+      <div class="edu-school">Korea University</div>
+      <div class="edu-period">2016.03 – 2025.08 · Dept. of Mechanical Engineering</div>
+      <div class="edu-desc">Dissertation: Robotic Grasp via Deep Learning for Grasp Candidate Generation and Torque Estimation<br><br>Key topics: Object Detection · Segmentation · Mass/Volume Estimation · Affordance · Grasping</div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-degree">Bachelor of Science</div>
+      <div class="edu-school">Korea University</div>
+      <div class="edu-period">2010.03 – 2016.02 · Dept. of Mechanical Engineering</div>
+      <div class="edu-desc">고려대학교 기계공학과 학사 졸업</div>
+    </div>
+  </div>
+  <h2 class="section-heading"><span>02</span>Work Experience</h2>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-date">2025.10 – Present · 두산로보틱스</div>
+      <div class="timeline-company">Doosan Robotics</div>
+      <div class="timeline-role">Senior Engineer · PAP / LPC / RDMC Team</div>
+      <ul class="timeline-body">
+        <li>AI 기반 물류 솔루션 — Depalletizing on Edge PC</li>
+        <li>CES 2026 AI Depalletizer: OCR · SORT · CuMotion 활용, 텍스트 입력 → 박스 정렬 시연</li>
+        <li>양팔로봇 몸통 설계 + Teleoperation + VLA 데이터 수집</li>
+        <li>LLM Chatbot (llama.cpp · GPT-OSS-20B · RAG)</li>
+      </ul>
+      <div class="badge-row"><span class="badge">Depalletizing</span><span class="badge">CES 2026</span><span class="badge">Teleoperation</span><span class="badge">LLM+RAG</span></div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">2024.09 – 2025.09 · 코라스로보틱스</div>
+      <div class="timeline-company">Koras Robotics</div>
+      <div class="timeline-role">Senior Engineer (겸임)</div>
+      <ul class="timeline-body">
+        <li>AI 기반 랜덤 피스 피킹 (Tool Changer) + 음성 기반 명령</li>
+        <li>F&B 솔루션: 로봇 팔 + Tool Changer</li>
+        <li>Pick-and-place with Human Voice Control</li>
+      </ul>
+      <div class="badge-row"><span class="badge">Piece Picking</span><span class="badge">Tool Changer</span><span class="badge">Voice Control</span></div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">2016.03 – 2024.08 · 고려대학교</div>
+      <div class="timeline-company">Korea University — Intelligent Robotics Lab</div>
+      <div class="timeline-role">PhD Researcher · Advisor: Prof. Jae-Bok Song</div>
+      <ul class="timeline-body">
+        <li>물체 이해 모델 연구: SIAS-Net · GPG-Net · CV-Net 등</li>
+        <li>Tool Changer 기반 파지 시스템 개발</li>
+        <li>국제로봇 대회 4회 참가 (Object Detection 담당)</li>
+        <li>모방학습 기반 조립 작업 연구</li>
+        <li>국가과제 실무책임자 (산업부·과기부, 총 100억+ 규모)</li>
+      </ul>
+      <div class="badge-row"><span class="badge">SIAS-Net</span><span class="badge">GPG-Net</span><span class="badge">WRS 🥇</span><span class="badge">RoboCup 🥇</span></div>
+    </div>
+  </div>
+  <h2 class="section-heading" style="margin-top:48px"><span>03</span>Funded Projects</h2>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div class="edu-card"><div style="font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;margin-bottom:6px">산업통상자원부</div><div class="edu-degree" style="font-size:14.5px">다량의 대상물에 대한 로봇용 조작 학습기술 개발</div><div class="edu-period">2년 · 5.7억 · 참여기관 실무책임자</div></div>
+    <div class="edu-card"><div style="font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;margin-bottom:6px">과학기술정보통신부</div><div class="edu-degree" style="font-size:14.5px">촉각이 가능한 로봇 손으로 다양한 물체를 다루는 방법과 절차를 학습하는 로봇 손 조작 지능 개발</div><div class="edu-period">4년 · 70.1억 · 주관기관 실무책임자</div></div>
+    <div class="edu-card"><div style="font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;margin-bottom:6px">산업통상자원부</div><div class="edu-degree" style="font-size:14.5px">심층강화학습 기반의 비정형 공유작업 기술 개발</div><div class="edu-period">4년 · 31.9억 · 1차년도 주관기관 실무책임자</div></div>
+    <div class="edu-card"><div style="font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;margin-bottom:6px">Corporate · LG전자 / 만도</div><div class="edu-degree" style="font-size:14.5px">빈피킹 시스템 개발 과제 (×2)</div><div class="edu-period">기업 위탁 연구</div></div>
+    <div class="edu-card"><div style="font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;margin-bottom:6px">Technology Transfer · 유진로봇</div><div class="edu-degree" style="font-size:14.5px">엘리베이터 인식 및 탑승 기술이전</div><div class="edu-period">기술이전</div></div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="section">
+  <h2 class="section-heading"><span>03</span>Projects</h2>
+  <div class="projects-grid">
+    <div class="project-card featured">
+      <div class="project-media"><video controls muted preload="metadata"><source src="videos/CES.mp4" type="video/mp4"></video></div>
+      <div class="project-body">
+        <div class="project-year">2025 – 2026 · Doosan Robotics</div>
+        <div class="project-title">AI Depalletizer</div>
+        <ul class="project-desc">
+          <li>팔레트 위 상자들을 컨베이어 벨트로 옮기는 AI 솔루션</li>
+          <li>상자 인식 모델 및 파지 자세 추정 기술 개발</li>
+          <li>자동 데이터 수집 및 오토라벨링 파이프라인</li>
+          <li>CES 2026 시연: 텍스트 입력 → 박스 정렬</li>
+          <li>ROS2 기반 CuMotion 및 Isaac SIM 통합</li>
+        </ul>
+        <div class="badge-row"><span class="tag lang">Python</span><span class="tag fw">ROS2</span><span class="tag ai">PyTorch</span><span class="tag fw">FastAPI</span><span class="tag fw">Kivy</span><span class="tag ai">OCR</span><span class="tag ai">OpenCV</span><span class="tag ai">Open3D</span><span class="tag ai">SORT</span><span class="tag hw">CuMotion</span><span class="tag hw">OnRobot</span><span class="tag hw">Jetson Orin/Thor</span></div>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-media"><img src="images/lerobot.jpg" alt="양팔 로봇 & Teleoperation"></div>
+      <div class="project-body">
+        <div class="project-year">2025 · Side Project</div>
+        <div class="project-title">양팔 로봇 &amp; Teleoperation</div>
+        <ul class="project-desc">
+          <li>원격 조작 기반 데이터 수집 및 VLA 모델 학습</li>
+          <li>로봇 팔 2대 + active sensing 카메라 몸통 설계</li>
+          <li>HTC Vive controller 활용 협동로봇 원격 조작</li>
+          <li>LeRobot 기반 Leader &amp; Follower 원격 조작</li>
+          <li>Rerun 활용 데이터 시각화</li>
+        </ul>
+        <div class="badge-row"><span class="tag lang">Python</span><span class="tag fw">ROS2</span><span class="tag ai">PyTorch</span><span class="tag fw">LeRobot</span><span class="tag fw">Rerun</span><span class="tag ai">OpenCV</span></div>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-media"><video controls muted preload="metadata"><source src="videos/TAG.mp4" type="video/mp4"></video></div>
+      <div class="project-body">
+        <div class="project-year">2022 – 2024 · Korea University</div>
+        <div class="project-title">Task-Agnostic Grasping</div>
+        <ul class="project-desc">
+          <li>Point cloud 기반 파지 자세 추정 GPG-Net 개발</li>
+          <li>무게중심·부피·질량 추정 CV-Net 개발</li>
+          <li>발생 토크 기반 그리퍼 자동 선정 알고리즘</li>
+        </ul>
+        <div class="badge-row"><span class="tag lang">Python</span><span class="tag fw">ROS2</span><span class="tag ai">PyTorch</span><span class="tag ai">Open3D</span><span class="tag hw">Tool Changer</span><span class="tag hw">RealSense</span></div>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-media"><video controls muted preload="metadata"><source src="videos/TOG.mp4" type="video/mp4"></video></div>
+      <div class="project-body">
+        <div class="project-year">2022 – 2024 · Korea University</div>
+        <div class="project-title">Task-Oriented Grasping (SIAS-Net)</div>
+        <ul class="project-desc">
+          <li>마스크·어포던스 동시 추정 SIAS-Net 개발</li>
+          <li>어포던스 기반 파지 자세 추정 알고리즘</li>
+          <li>토크 기반 그리퍼 자동 선정 알고리즘</li>
+        </ul>
+        <div class="badge-row"><span class="tag lang">Python</span><span class="tag fw">ROS2</span><span class="tag ai">PyTorch</span><span class="tag ai">Open3D</span><span class="tag hw">UR</span><span class="tag hw">Tool Changer</span></div>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-media"><video controls muted preload="metadata"><source src="videos/ramen.mp4" type="video/mp4"></video></div>
+      <div class="project-body">
+        <div class="project-year">2022 – 2023</div>
+        <div class="project-title">요리 로봇 플랫폼 (F&amp;B)</div>
+        <ul class="project-desc">
+          <li>그리퍼 교환 기반 F&B 요리 솔루션 개발</li>
+          <li>AI 기반 식재료·도구·마커 인식</li>
+          <li>오이무침·라면·짜장면·탕수육 실제 요리 수행</li>
+        </ul>
+        <div class="badge-row"><span class="tag fw">ROS1</span><span class="tag ai">PyTorch</span><span class="tag hw">Tool Changer</span><span class="tag hw">UR</span><span class="tag hw">Mitsubishi</span></div>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-media"><video controls muted preload="metadata"><source src="videos/tidy up.mp4" type="video/mp4"></video></div>
+      <div class="project-body">
+        <div class="project-year">2020 – 2021</div>
+        <div class="project-title">Table Tidy-Up Task</div>
+        <ul class="project-desc">
+          <li>주어진 이미지와 동일하게 책상 정리하는 작업</li>
+          <li>Mask RCNN + 샴 네트워크 기반 미학습 물체 인식</li>
+          <li>강화학습 기반 파지 모션 제어</li>
+        </ul>
+        <div class="badge-row"><span class="tag fw">ROS1</span><span class="tag ai">PyTorch</span><span class="tag hw">Allegro</span><span class="tag hw">Panda</span></div>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-media"><video controls muted preload="metadata"><source src="videos/bin picking.mp4" type="video/mp4"></video></div>
+      <div class="project-body">
+        <div class="project-year">2018 – 2019</div>
+        <div class="project-title">Bin Picking: Known &amp; Unknown Objects</div>
+        <ul class="project-desc">
+          <li>20종 이상 물체 빈 피킹 및 분류 작업</li>
+          <li>Instance segmentation으로 미학습 물체 인식</li>
+          <li>DDI 기반 AI 미인식 물체 파지 알고리즘</li>
+        </ul>
+        <div class="badge-row"><span class="tag fw">ROS1</span><span class="tag ai">PyTorch</span><span class="tag hw">UR</span><span class="tag hw">RealSense</span></div>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-media"><video controls muted preload="metadata"><source src="videos/assembly.mp4" type="video/mp4"></video></div>
+      <div class="project-body">
+        <div class="project-year">2017</div>
+        <div class="project-title">Assembly via Imitation Learning</div>
+        <ul class="project-desc">
+          <li>GMM-GMR 알고리즘으로 사람의 조립 전략 학습</li>
+          <li>양팔 협조 작업, 어드미턴스 제어로 위치 오차 극복</li>
+        </ul>
+        <div class="badge-row"><span class="tag fw">ROS1</span><span class="tag ai">TensorFlow</span><span class="tag hw">Sawyer</span><span class="tag hw">UR</span></div>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-media"><video controls muted preload="metadata"><source src="videos/data collection.mp4" type="video/mp4"></video></div>
+      <div class="project-body">
+        <div class="project-year">2016 – 2017</div>
+        <div class="project-title">Grasping Data Collection System</div>
+        <ul class="project-desc">
+          <li>파지 및 조립 데이터 수집 환경 설계·제작</li>
+          <li>다양한 물체 인식 및 파지 모델 개발</li>
+        </ul>
+        <div class="badge-row"><span class="tag fw">ROS1</span><span class="tag ai">TensorFlow</span><span class="tag ai">Caffe</span><span class="tag hw">UR</span><span class="tag hw">RealSense</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section id="research" class="section">
+  <h2 class="section-heading"><span>04</span>Publications &amp; Patents</h2>
+  <div class="pub-filter">
+    <button class="pub-filter-btn active" onclick="filterPubs('all',this)">All</button>
+    <button class="pub-filter-btn" onclick="filterPubs('intl-journal',this)">Intl. Journal</button>
+    <button class="pub-filter-btn" onclick="filterPubs('intl-conf',this)">Intl. Conference</button>
+    <button class="pub-filter-btn" onclick="filterPubs('kr-journal',this)">Korean Journal</button>
+    <button class="pub-filter-btn" onclick="filterPubs('kr-conf',this)">Korean Conference</button>
+    <button class="pub-filter-btn" onclick="filterPubs('patent',this)">Patents</button>
+  </div>
+  <div class="pub-list">
+    <div class="pub-item" data-type="intl-journal"><div class="pub-year">2022</div><div><div class="pub-venue">Advanced Robotics · Vol. 36</div><div class="pub-title">Team Tidyboy at the WRS 2020: a modular software framework for home service robots</div><div class="pub-authors">Taewoong Kang, Dongwoon Song, Jae-Bong Yi, Joonyoung Kim, et al.</div></div></div>
+    <div class="pub-item" data-type="intl-journal"><div class="pub-year">2022</div><div><div class="pub-venue">JIST · Intelligent Service Robotics Vol. 15</div><div class="pub-title">Object Manipulation System Based on Image-Based Reinforcement Learning</div><div class="pub-authors">Sunin Kim, <strong>HyunJun Jo</strong>, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="intl-journal"><div class="pub-year">2021</div><div><div class="pub-venue">IJPEM · Vol. 22</div><div class="pub-title">CAD-based View Planning with Globally Consistent Registration for Robotic Inspection</div><div class="pub-authors">Minwoo Na, <strong>HyunJun Jo</strong>, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="intl-journal"><div class="pub-year">2021</div><div><div class="pub-venue">IJCAS · Vol. 19</div><div class="pub-title">Irregular Depth Tiles: Automatically Generated Data for Network-Based Robotic Grasping in 2D Dense Clutter</div><div class="pub-authors">Da-Wit Kim, <strong>HyunJun Jo</strong>, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="intl-journal"><div class="pub-year">2020</div><div><div class="pub-venue">Applied Sciences · Vol. 10</div><div class="pub-title">Object-Independent Grasping in Heavy Clutter <span class="pub-badge first">1st Author</span></div><div class="pub-authors"><strong>HyunJun Jo</strong>, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="intl-conf"><div class="pub-year">2021</div><div><div class="pub-venue">RoboCup · Robot World Cup</div><div class="pub-title">RoboCup@Home 2021 Domestic Standard Platform League Winner</div><div class="pub-authors">Dongwoon Song, Taewoong Kang, et al.</div></div></div>
+    <div class="pub-item" data-type="intl-conf"><div class="pub-year">2021</div><div><div class="pub-venue">ICCAS</div><div class="pub-title">Tidy-Up Tasks Using Trajectory-based Imitation Learning</div><div class="pub-authors">Doo-Jun Kim, <strong>HyunJun Jo</strong>, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="intl-conf"><div class="pub-year">2021</div><div><div class="pub-venue">UR · Ubiquitous Robots</div><div class="pub-title">Object Manipulation System Based on Image-Based Reinforcement Learning</div><div class="pub-authors">Sunin Kim, <strong>HyunJun Jo</strong>, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="intl-conf"><div class="pub-year">2020</div><div><div class="pub-venue">ICCAS</div><div class="pub-title">Grasping System for Industrial Application Using Point Cloud-Based Clustering</div><div class="pub-authors">Joon-Hyup Bae, <strong>HyunJun Jo</strong>, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="intl-conf"><div class="pub-year">2020</div><div><div class="pub-venue">ICCAS</div><div class="pub-title">Robotic Tidy-up Tasks using Point Cloud-based Pose Estimation</div><div class="pub-authors">Jinglan Piao, <strong>HyunJun Jo</strong>, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="intl-conf"><div class="pub-year">2020</div><div><div class="pub-venue">ICCAS</div><div class="pub-title">Deep Learning-based Object Understanding for Robotic Manipulation</div><div class="pub-authors">Jong-Sul Moon, <strong>HyunJun Jo</strong>, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="intl-conf"><div class="pub-year">2019</div><div><div class="pub-venue">UR · Ubiquitous Robots</div><div class="pub-title">Grasping Method in a Complex Environment using CNN Based on Modified Average Filter</div><div class="pub-authors">Da-Wit Kim, <strong>HyunJun Jo</strong>, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="intl-conf"><div class="pub-year">2018</div><div><div class="pub-venue">ICRA · Robotics and Automation</div><div class="pub-title">Assembly Strategy Generation for Various Objects Using GMM-GMR and Exploration <span class="pub-badge first">1st Author</span></div><div class="pub-authors"><strong>HyunJun Jo</strong>, Cheol-Hui Min, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="intl-conf"><div class="pub-year">2018</div><div><div class="pub-venue">UR · Ubiquitous Robots</div><div class="pub-title">Bin Picking System using Object Recognition based on Automated Synthetic Dataset Generation <span class="pub-badge first">1st Author</span></div><div class="pub-authors"><strong>HyunJun Jo</strong>, Cheol-Hui Min, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="intl-conf"><div class="pub-year">2018</div><div><div class="pub-venue">ETME</div><div class="pub-title">Reinforcement Learning Algorithm for Assembly Strategy of Square Peg-in-Hole using DMP and PoWER</div><div class="pub-authors">Young-Loul Kim, <strong>HyunJun Jo</strong>, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="intl-conf"><div class="pub-year">2017</div><div><div class="pub-venue">ICCAS</div><div class="pub-title">Data Augmentation using Synthesized Images for Object Detection <span class="pub-badge first">1st Author</span></div><div class="pub-authors"><strong>HyunJun Jo</strong>, Yong-Ho Na, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="intl-conf"><div class="pub-year">2017</div><div><div class="pub-venue">ICCAS</div><div class="pub-title">Learning to Grasp using Ensemble Learning Method based on the Simulation Data and Real Data</div><div class="pub-authors">Yong-Ho Na, <strong>HyunJun Jo</strong>, Jae-Bok Song</div></div></div>
+    <div class="pub-item" data-type="kr-journal"><div class="pub-year">2022</div><div><div class="pub-venue">로봇학회 논문지 Vol. 17</div><div class="pub-title">시연에 의해 유도된 탐험을 통한 시각 기반의 물체 조작</div><div class="pub-authors">김두준, <strong>조현준</strong>, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-journal"><div class="pub-year">2021</div><div><div class="pub-venue">로봇학회 논문지 Vol. 16</div><div class="pub-title">로봇 팔을 활용한 정리작업을 위한 물체 자세추정 및 이미지 매칭</div><div class="pub-authors">박정란, <strong>조현준</strong>, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-journal"><div class="pub-year">2021</div><div><div class="pub-venue">로봇학회 논문지 Vol. 16</div><div class="pub-title">점군 기반의 심층학습을 이용한 파지 알고리즘</div><div class="pub-authors">배준협, <strong>조현준</strong>, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-journal"><div class="pub-year">2020</div><div><div class="pub-venue">로봇학회 논문지 Vol. 15</div><div class="pub-title">이동로봇의 안전한 엘리베이터 탑승을 위한 RGB-D 센서 기반의 엘리베이터 인식 및 위치추정</div><div class="pub-authors">장민경, <strong>조현준</strong>, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-journal"><div class="pub-year">2019</div><div><div class="pub-venue">로봇학회 논문지 Vol. 14</div><div class="pub-title">Mask R-CNN을 이용한 물체인식 및 개체분할의 학습 데이터셋 자동 생성 <span class="pub-badge first">1st Author</span></div><div class="pub-authors"><strong>조현준</strong>, 김다윗, 송재복</div></div></div>
+    <div class="pub-item" data-type="patent"><div class="pub-year">2021</div><div><div class="pub-venue">국내특허 · 등록 · 10-2242744</div><div class="pub-title">이동로봇과 이동로봇의 엘리베이터 인식 방법</div><div class="pub-authors">송재복, <strong>조현준</strong>, 장민경 · 등록일: 2021.04.15</div></div></div>
+    <div class="pub-item" data-type="patent"><div class="pub-year">2019</div><div><div class="pub-venue">국내특허 · 출원 · 10-2019-0078910</div><div class="pub-title">영상 학습 장치</div><div class="pub-authors">송재복, 김다윗, <strong>조현준</strong> · 출원일: 2019.07.01</div></div></div>
+    <div class="pub-item" data-type="kr-conf"><div class="pub-year">2023</div><div><div class="pub-venue">한국로봇종합학술대회</div><div class="pub-title">객체 분할 기반의 어포던스 분할 <span class="pub-badge first">1st Author</span></div><div class="pub-authors"><strong>조현준</strong>, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-conf"><div class="pub-year">2022</div><div><div class="pub-venue">대한기계학회 IT융합부문</div><div class="pub-title">SPSNet: 단순한 구조를 가진 CNN을 통한 구성요소 분할 <span class="pub-badge first">1st Author</span><span class="pub-badge award">🏆 우수논문상</span></div><div class="pub-authors"><strong>조현준</strong>, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-conf"><div class="pub-year">2021</div><div><div class="pub-venue">대한기계학회</div><div class="pub-title">특징점 인식 신경망을 이용한 일반화된 물체 조작</div><div class="pub-authors">김선인, <strong>조현준</strong>, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-conf"><div class="pub-year">2021</div><div><div class="pub-venue">한국로봇종합학술대회</div><div class="pub-title">FSR이 장착된 로봇 손을 이용한 파지</div><div class="pub-authors">김두준, <strong>조현준</strong>, 김선인, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-conf"><div class="pub-year">2020</div><div><div class="pub-venue">대한기계학회</div><div class="pub-title">병렬적 잔류 블록 기반의 실시간 물체 정보 추정</div><div class="pub-authors">문종술, <strong>조현준</strong>, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-conf"><div class="pub-year">2020</div><div><div class="pub-venue">대한기계학회</div><div class="pub-title">상자와의 충돌을 회피하기 위한 경로계획을 활용한 빈 피킹</div><div class="pub-authors">배준협, <strong>조현준</strong>, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-conf"><div class="pub-year">2019</div><div><div class="pub-venue">대한기계학회</div><div class="pub-title">마스크를 이용한 학습 기반의 파지 자세 추정 알고리즘</div><div class="pub-authors">김다윗, <strong>조현준</strong>, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-conf"><div class="pub-year">2019</div><div><div class="pub-venue">대한기계학회</div><div class="pub-title">마커 검출 기반의 자세 추정 네트워크 학습용 데이터셋 자동 생성</div><div class="pub-authors">김다윗, <strong>조현준</strong>, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-conf"><div class="pub-year">2019</div><div><div class="pub-venue">한국로봇종합학술대회</div><div class="pub-title">배경 제거 알고리즘 기반의 물체 인식 데이터 자동 생성</div><div class="pub-authors">김다윗, <strong>조현준</strong>, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-conf"><div class="pub-year">2018</div><div><div class="pub-venue">한국로봇종합학술대회</div><div class="pub-title">대역차단필터를 이용한 하모닉드라이브의 토크리플 경감 <span class="pub-badge first">1st Author</span></div><div class="pub-authors"><strong>조현준</strong>, 김영렬, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-conf"><div class="pub-year">2017</div><div><div class="pub-venue">대한기계학회 IT융합부문</div><div class="pub-title">인공 신경망을 통한 시뮬레이터 데이터 기반의 물체 파지 학습</div><div class="pub-authors">나용호, <strong>조현준</strong>, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-conf"><div class="pub-year">2017</div><div><div class="pub-venue">대한기계학회 IT융합부문</div><div class="pub-title">로봇의 물체 조작 기술을 위한 딥 러닝 기반의 물체 인식 기술 <span class="pub-badge first">1st Author</span></div><div class="pub-authors"><strong>조현준</strong>, 나용호, 송재복</div></div></div>
+    <div class="pub-item" data-type="kr-conf"><div class="pub-year">2016</div><div><div class="pub-venue">대한기계학회 동역학 및 제어부문</div><div class="pub-title">토크리플 저감을 위한 4 스포크 구조의 토크 센서 <span class="pub-badge first">1st Author</span></div><div class="pub-authors"><strong>조현준</strong>, 민재경, 송재복</div></div></div>
+  </div>
+</section>
+
+<!-- AWARDS -->
+<section id="competitions" class="section">
+  <h2 class="section-heading"><span>05</span>Competitions &amp; Awards</h2>
+  <div class="comps-grid">
+    <div class="comp-card"><div class="comp-medal">🥇</div><div><div class="comp-name">WRS 2020</div><div class="comp-meta">2021.09 · 1st Place</div><div class="comp-league">Partner Robot Challenge [Real Space]</div></div></div>
+    <div class="comp-card"><div class="comp-medal">🥇</div><div><div class="comp-name">RoboCup 2021</div><div class="comp-meta">2021.06 · 1st Place</div><div class="comp-league">Domestic Standard Platform League (DSPL)</div></div></div>
+    <div class="comp-card"><div class="comp-medal">🥈</div><div><div class="comp-name">RoboCup 2019</div><div class="comp-meta">2019.07 · 2nd Place</div><div class="comp-league">Domestic Standard Platform League (DSPL)</div></div></div>
+    <div class="comp-card"><div class="comp-medal">🏅</div><div><div class="comp-name">WRS 2018</div><div class="comp-meta">2018.10 · 4th Place</div><div class="comp-league">Partner Robot Challenge [Real Space]</div></div></div>
+  </div>
+  <h2 class="section-heading"><span>—</span>Other Awards</h2>
+  <div class="other-awards-list">
+    <div class="award-item"><div class="award-year">2023</div><div><div style="font-weight:600;font-size:14.5px">🏆 우수논문상 — 대한기계학회</div><div style="font-size:13px;color:var(--text-muted);margin-top:2px">SPSNet: CNN을 통한 구성요소 분할</div></div></div>
+    <div class="award-item"><div class="award-year">2015</div><div><div style="font-weight:600;font-size:14.5px">Best Design — KU Dept. of Mechanical Engineering</div><div style="font-size:13px;color:var(--text-muted);margin-top:2px">2015 3D Printing F1 제작/경주대회</div></div></div>
+    <div class="award-item"><div class="award-year">2014</div><div><div style="font-weight:600;font-size:14.5px">Gold Prize — International Capstone Design Fair</div><div style="font-size:13px;color:var(--text-muted);margin-top:2px">Korea · China · Japan</div></div></div>
+    <div class="award-item"><div class="award-year">2014</div><div><div style="font-weight:600;font-size:14.5px">금상 — 고려대학교 공학교육혁신센터</div><div style="font-size:13px;color:var(--text-muted);margin-top:2px">2014 창의적 종합설계 경진대회</div></div></div>
+  </div>
+</section>
+
+<script>
+  function show(id, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  }
+  function filterPubs(type, btn) {
+    document.querySelectorAll('.pub-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.pub-item').forEach(item => {
+      if (type === 'all' || item.dataset.type === type) item.classList.remove('hidden');
+      else item.classList.add('hidden');
+    });
+  }
+</script>
+</body>
+</html>
